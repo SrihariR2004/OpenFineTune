@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><title>OpenRLHF Trainer</title></head>
+<body>
+<h1>Upload Dataset & Train OpenRLHF Model</h1>
+<form action="/train/" method="post" enctype="multipart/form-data">
+  Dataset file:<br><input type="file" name="dataset_file" required><br><br>
+  Training method:<br>
+  <select name="training_method" required>
+    <option value="ppo">PPO</option>
+    <option value="grpo">GRPO</option>
+    <option value="supervised">Supervised Fine-Tuning</option>
+  </select><br><br>
+  Base model:<br>
+  <input type="text" name="base_model" value="gpt2" required><br><br>
+  <button type="submit">Start Training</button>
+</form>
+</body>
+</html>
