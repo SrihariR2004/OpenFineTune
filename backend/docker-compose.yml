@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./outputs:/app/outputs
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - RAY_ADDRESS=ray://ray:10001
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    depends_on:
+      - ray
+      - mlflow
+    runtime: nvidia
+
+  ray:
+    image: rayproject/ray:2.6.0-py310-gpu
+    command: ray start --head --port=6379 --dashboard-host=0.0.0.0
+    ports:
+      - "6379:6379"
+      - "8265:8265"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    runtime: nvidia
+
+  mlflow:
+    image: mlfloworg/mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow/artifacts:/mlflow/artifacts
